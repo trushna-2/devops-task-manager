@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Student Task Manager Application",
   "main": "app.js",
-  
-"scripts": {
-  "start": "node app.js",
-  "build": "node build.js",
-  "test": "node test.js"
-}
-
+  "scripts": {
+    "start": "node app.js",
+    "build": "node build.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "prom-client": "^15.1.3"
+  }
 }

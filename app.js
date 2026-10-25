@@ -1,9 +1,28 @@
+
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const client = require('prom-client');
 
-const server = http.createServer((req, res) => {
-    const file = path.join(__dirname, 'public', req.url === '/' ? 'index.html' : req.url);
+client.collectDefaultMetrics();
+
+const httpRequestCounter = new client.Counter({
+    name: 'task_manager_http_requests_total',
+    help: 'Total HTTP requests received'
+});
+
+const server = http.createServer(async (req, res) => {
+   if (req.url.split('?')[0] !== '/metrics') {
+    httpRequestCounter.inc();
+}
+
+if (req.url.split('?')[0] === '/metrics') {
+        res.setHeader('Content-Type', client.register.contentType);
+        return res.end(await client.register.metrics());
+    }
+
+    const file = path.join(__dirname, 'public',
+        req.url === '/' ? 'index.html' : req.url);
 
     fs.readFile(file, (err, data) => {
         if (err) {
